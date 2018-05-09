@@ -84,10 +84,10 @@ public class PurchaseController {
 	}
 
 	//@RequestMapping("getPurchase.do")
-	@RequestMapping(value="getPurchase", method=RequestMethod.GET)
+	@RequestMapping(value="getPurchase")
 	public ModelAndView getPurchase(@RequestParam("tranNo") String tranNo) throws Exception {
 
-		System.out.println("/purchase/getPurchase : GET");
+		System.out.println("/purchase/getPurchase ");
 		Purchase purchase = purchaseService.getPurchase(Integer.parseInt(tranNo));
 //		purchase.setPurchaseProd(product);
 //		purchase.setBuyer((User)session.getAttribute("user"));
@@ -149,12 +149,14 @@ public class PurchaseController {
 	@RequestMapping(value="updatePurchase", method=RequestMethod.POST)
 	public ModelAndView updatePurchase(@ModelAttribute("purchase") Purchase purchase) throws Exception{
 		
-		System.out.println("/purchase/updatePurchaseView : POST");
+		System.out.println("/purchase/updatePurchase : POST");
 		
 		purchaseService.updatePurchase(purchase);
 		
+		System.out.println("/purchase/updatePurchase22222222222 : POST");
+		
 		ModelAndView modelAndView = new ModelAndView();
-		modelAndView.setViewName("redirect:/purchase/getPurchase?=tranNo="+purchase.getTranNo());
+		modelAndView.setViewName("/purchase/getPurchase");
 		modelAndView.addObject("purchase", purchase);
 
 		return modelAndView;

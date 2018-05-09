@@ -2,6 +2,7 @@ package com.model2.mvc.web.product;
 
 import java.util.Map;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.util.CookieGenerator;
 
 import com.model2.mvc.common.Page;
 import com.model2.mvc.common.Search;
@@ -68,7 +70,24 @@ public class ProductController {
 		Product product = productService.getProduct(Integer.parseInt(prodNo));
 		// Model°ú View ¿¬°á
 		model.addAttribute("product", product);
-
+		
+		String history = null;
+		Cookie[] getCookie = request.getCookies();
+		if(getCookie !=null) {
+			for(int i=0; i<getCookie.length; i++) {
+				Cookie cookie = getCookie[i];
+				if(cookie.getName().equals("history")) {
+					history = cookie.getValue();
+				}
+			}
+		}
+		
+		history +=","+product.getProdNo();
+		//history +=","+product.getProdName();
+		CookieGenerator cg = new CookieGenerator();
+		cg.setCookieName("history");
+		
+		
 		if (request.getParameter("menu").equals("manage")) {
 			System.out.println("menu :::::" + request.getParameter("menu"));
 			return "forward:/product/updateProductView.jsp";

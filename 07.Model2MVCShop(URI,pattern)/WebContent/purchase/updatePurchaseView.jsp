@@ -11,6 +11,11 @@
 <script type="text/javascript" src="../javascript/calendar.js">
 </script>
 
+<script type="text/javascript">
+function fncUpdatePurchase() {
+	document.updatePurchase.submit();
+}
+</script>
 </head>
 
 <body bgcolor="#ffffff" text="#000000">
@@ -109,7 +114,7 @@
 		<td height="1" colspan="3" bgcolor="D6D6D6"></td>
 	</tr>
 	<tr>
-		<td width="104" class="ct_write">배송희망일자</td>
+		<td width="104" class="ct_write">변경 배송희망일자</td>
 		<td bgcolor="D6D6D6" width="1"></td>
 		<td width="200" class="ct_write01">
 			<input type="text" readonly="readonly" name="divyDate" class="ct_input_g" 
@@ -133,7 +138,7 @@
 					<img src="/images/ct_btnbg01.gif" width="17" height="23"/>
 				</td>
 				<td background="/images/ct_btnbg02.gif" class="ct_btn01"	style="padding-top: 3px;">
-						<a href="/purchase/updatePurchase?tranNo=${purchase.tranNo}">수정</a>
+						<a href="javascript:fncUpdatePurchase();">수정</a>
 					</td>
 				<td width="14" height="23">
 					<img src="/images/ct_btnbg03.gif" width="14" height="23"/>
