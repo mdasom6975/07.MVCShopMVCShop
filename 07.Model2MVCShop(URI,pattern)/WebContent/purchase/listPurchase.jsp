@@ -23,7 +23,7 @@
 
 <div style="width: 98%; margin-left: 10px;">
 
-<form name="detailForm" action="/listPurchase.do" method="post">
+<form name="detailForm" action="/purchase/listPurchase" method="post">
 
 <table width="100%" height="37" border="0" cellpadding="0"	cellspacing="0">
 	<tr>
@@ -66,11 +66,11 @@
 		<c:set var="i" value="${i+1 }" />
 	<tr class="ct_list_pop">
 		<td align="center">
-			<a href="/getPurchase.do?tranNo=${purchase.tranNo}">${purchase.tranNo }</a>
+			<a href="/purchase/getPurchase?tranNo=${purchase.tranNo}">${purchase.tranNo }</a>
 		</td>
 		<td></td>
 		<td align="left">
-			<a href="/getUser.do?userId=${user.userId}">${user.userId}</a>
+			<a href="/user/getUser?userId=${user.userId}">${user.userId}</a>
 		</td>
 		<td></td>
 		<td align="left">${purchase.receiverName}</td>
@@ -100,13 +100,13 @@
 		<td></td>
 		<c:if test="${purchase.tranCode=='2' }">
 			<td align="left">
-			<a href="/deletePurchaseView.do?tranNo=${purchase.tranNo}">주문취소</a>
+			<a href="/purchase/deletePurchase?tranNo=${purchase.tranNo}">주문취소</a>
 			</td>
 		</c:if>
 		
 		<c:if test="${purchase.tranCode=='3' }">
 			<td align="left">
-			<a href="/updateTranCode.do?tranNo=${purchase.tranNo}&tranCode=${purchase.tranCode}">물건도착</a>
+			<a href="/purchase/updateTranCode?tranNo=${purchase.tranNo}&tranCode=${purchase.tranCode}">물건도착</a>
 			</td>
 		</c:if>
 		 

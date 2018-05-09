@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -22,6 +23,7 @@ import com.model2.mvc.service.product.ProductService;
 import com.model2.mvc.service.purchase.PurchaseService;
 
 @Controller
+@RequestMapping("/purchase/*")
 public class PurchaseController {
 
 	@Autowired
@@ -42,9 +44,11 @@ public class PurchaseController {
 	@Value("#{commonProperties['pageSize']}")
 	int pageSize;
 
-	@RequestMapping("/addPurchaseView.do")
+	//@RequestMapping("/addPurchaseView.do")
+	@RequestMapping(value="addPurchase", method=RequestMethod.GET)
 	public ModelAndView addPurchase(@RequestParam("prodNo") String prodNo)  throws Exception {
-		System.out.println("addPurchaseView.do");
+		
+		System.out.println("/purchase/addPurchase : GET");
 				
 		Product product = productService.getProduct(Integer.parseInt(prodNo));
 		
@@ -55,10 +59,11 @@ public class PurchaseController {
 		return modelAndView;
 	}
 
-	@RequestMapping("/addPurchase.do")
+	//@RequestMapping("/addPurchase.do")
+	@RequestMapping(value="addPurchase", method=RequestMethod.POST)
 	public ModelAndView addPurchase(@ModelAttribute("purchase") Purchase purchase, @RequestParam("prodNo") String prodNo, HttpSession session) throws Exception {
 
-		System.out.println("/addPurchase.do");
+		System.out.println("/purchase/addPurchase : POST");
 		
 //		purchase.setPurchaseProd(product);
 //		purchase.setBuyer((User)session.getAttribute("user"));
@@ -78,14 +83,16 @@ public class PurchaseController {
 		return modelAndView;
 	}
 
-	@RequestMapping("getPurchase.do")
+	//@RequestMapping("getPurchase.do")
+	@RequestMapping(value="getPurchase", method=RequestMethod.GET)
 	public ModelAndView getPurchase(@RequestParam("tranNo") String tranNo) throws Exception {
 
-		System.out.println("getPurchase.do");
+		System.out.println("/purchase/getPurchase : GET");
 		Purchase purchase = purchaseService.getPurchase(Integer.parseInt(tranNo));
 //		purchase.setPurchaseProd(product);
 //		purchase.setBuyer((User)session.getAttribute("user"));
 		
+		System.out.println("주문 상세 정보에 무엇을 가져오나?::::::::"+purchase);
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("/purchase/getPurchase.jsp");
 		modelAndView.addObject("purchase", purchase);
@@ -94,10 +101,11 @@ public class PurchaseController {
 		return modelAndView;
 	}
 	
-	@RequestMapping("listPurchase.do")
+	//@RequestMapping("listPurchase.do")
+	@RequestMapping(value="listPurchase")
 	public ModelAndView listPurchase(@ModelAttribute("search") Search search, HttpSession session) throws Exception{
 		
-		System.out.println("listPurchase.do");
+		System.out.println("/purchase/listPurchase");
 		
 		User user=(User)session.getAttribute("user");
 		
@@ -123,10 +131,10 @@ public class PurchaseController {
 		return modelAndView;
 	}
 	
-	@RequestMapping("/updatePurchaseView.do")
-	public ModelAndView updatePurchaseView(@RequestParam("tranNo") String tranNo) throws Exception{
+	@RequestMapping(value="updatePurchase", method=RequestMethod.GET)
+	public ModelAndView updatePurchase(@RequestParam("tranNo") String tranNo) throws Exception{
 		
-		System.out.println("updatePurchaseView.do");
+		System.out.println("/purchase/updatePurchaseView : GET");
 		Purchase purchase = purchaseService.getPurchase(Integer.parseInt(tranNo));
 		
 		ModelAndView modelAndView = new ModelAndView();
@@ -137,7 +145,24 @@ public class PurchaseController {
 		
 	}
 	
-	@RequestMapping("/updateTranCode.do")
+	//@RequestMapping("/updatePurchaseView.do")
+	@RequestMapping(value="updatePurchase", method=RequestMethod.POST)
+	public ModelAndView updatePurchase(@ModelAttribute("purchase") Purchase purchase) throws Exception{
+		
+		System.out.println("/purchase/updatePurchaseView : POST");
+		
+		purchaseService.updatePurchase(purchase);
+		
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.setViewName("redirect:/purchase/getPurchase?=tranNo="+purchase.getTranNo());
+		modelAndView.addObject("purchase", purchase);
+
+		return modelAndView;
+		
+	}
+	
+	//@RequestMapping("/updateTranCode.do")
+	@RequestMapping(value="updatePurchaseTranCode")
 	public ModelAndView updateTranCode(@RequestParam(value = "prodNo", required=false) String prodNo, @RequestParam(value="tranNo", required=false) String tranNo,
 			@RequestParam("tranCode") String tranCode, HttpSession session) throws Exception{
 		

@@ -149,7 +149,7 @@ function fncGetList(currentPage) {
 				style="margin-top: 10px;">
 				<tr>
 					<td align="center">
-						 <input type="hidden" id="currentPage" name="currentPage" value=""/>
+						 <input type="hidden" id="currentPage" name="currentPage" value="0"/>
 						 <jsp:include page="../common/pageNavigator.jsp"/>
 					</td>
 				</tr>
