@@ -1,5 +1,6 @@
 package com.model2.mvc.web.product;
 
+import java.io.File;
 import java.util.Map;
 
 import javax.servlet.http.Cookie;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.CookieGenerator;
 
 import com.model2.mvc.common.Page;
@@ -51,9 +53,14 @@ public class ProductController {
 
 	//@RequestMapping("/addProduct.do")
 	@RequestMapping(value="addProduct", method=RequestMethod.POST)
-	public String addProduct(@ModelAttribute("product") Product product) throws Exception {
+	public String addProduct(@ModelAttribute("product") Product product,@RequestParam("file")MultipartFile file) throws Exception {
 
 		System.out.println("/product/addProduct : POST");
+		
+		File f = new File("C:\\Users\\Bit\\git\\07.Model2MVCShop\\07.Model2MVCShop(URI,pattern)\\WebContent\\images\\uploadFiles\\"+file.getOriginalFilename());
+		file.transferTo(f); //위의 경로에 파일 저장
+		product.setFileName(file.getOriginalFilename()); //프로덕트에 set
+		
 		// Business Logic
 		productService.addProduct(product);
 
