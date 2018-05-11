@@ -164,11 +164,11 @@ public class PurchaseController {
 	}
 	
 	//@RequestMapping("/updateTranCode.do")
-	@RequestMapping(value="updatePurchaseTranCode")
+	@RequestMapping(value="updateTranCode")
 	public ModelAndView updateTranCode(@RequestParam(value = "prodNo", required=false) String prodNo, @RequestParam(value="tranNo", required=false) String tranNo,
 			@RequestParam("tranCode") String tranCode, HttpSession session) throws Exception{
 		
-		int tranCodeUp = Integer.parseInt(tranCode);
+		int tranCodeUp = Integer.parseInt(tranCode.trim());
 		System.out.println("/purchase/updateTranCode GET");
 		
 		String role = "";
@@ -182,11 +182,11 @@ public class PurchaseController {
 		
 
 		if(role.equals("admin")) {
-			modelAndView.setViewName("/listProduct.do?menu=manage");
+			modelAndView.setViewName("redirect:/product/listProduct?menu=manage");
 			purchase = purchaseService.getPurchase2(Integer.parseInt(prodNo));			
 		} 
 		else if(role.equals("user")) {
-			modelAndView.setViewName("/listPurchase.do");
+			modelAndView.setViewName("redirect:/purchase/listPurchase");
 			purchase = purchaseService.getPurchase(Integer.parseInt(tranNo));
 		}
 		System.out.println(tranCodeUp);

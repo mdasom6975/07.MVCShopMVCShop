@@ -98,11 +98,6 @@
 		
 		</c:choose>
 		<td></td>
-		<c:if test="${purchase.tranCode=='2' }">
-			<td align="left">
-			<a href="/purchase/deletePurchase?tranNo=${purchase.tranNo}">주문취소</a>
-			</td>
-		</c:if>
 		
 		<c:if test="${purchase.tranCode=='3' }">
 			<td align="left">

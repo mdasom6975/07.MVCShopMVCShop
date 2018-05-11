@@ -47,9 +47,6 @@
 			<table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-top: 10px;">
 				<tr>
 					<td align="right">
-					<a href="/listProduct?orderby=lowprice">낮은가격순</a>
-			|
-			<a href="/listProduct?orderby=highprice">높은가격순</a>
 					<select name="searchCondition" class="ct_input_g" style="width: 80px">
 							<option value="0"
 								${ ! empty search.searchCondition && search.searchCondition==0 ? "selected" : "" }>상품번호</option>
