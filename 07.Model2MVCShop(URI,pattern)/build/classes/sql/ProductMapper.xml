@@ -33,9 +33,10 @@ SYSDATE )
 <!-- SQL : SELECT ONE -->
 <select id="getProduct" parameterType="int" resultMap="productSelectMap">
 SELECT
-prod_no, prod_name, prod_detail, manufacture_day, price, image_file, reg_date
-FROM product
-WHERE prod_no= #{value}
+p.prod_no, p.prod_name, p.prod_detail, p.manufacture_day, p.price, p.image_file, p.reg_date, nvl(trim(t.tran_status_code),1) as tran_status_code
+FROM product p, transaction t
+WHERE   t.prod_no(+)=p.prod_no
+AND p.prod_no = #{value}
 </select>
 
 <!-- SQL : UPDATE -->
@@ -71,7 +72,19 @@ WHERE prod_no = #{prodNo}
 				AND p.price like '%${searchKeyword}%'
 			</if>
 		</if>
-		ORDER BY p.prod_no ) inner_table
+		<choose>
+		<when test="orderby=='' ">
+		ORDER BY p.prod_no
+		</when>
+		<otherwise>
+		<if test="orderby=='highprice' ">
+		ORDER BY p.price DESC
+		</if> 
+		<if test="orderby=='lowprice' ">
+		ORDER BY p.price ASC
+		</if>
+		</otherwise>
+		</choose>) inner_table
 		WHERE ROWNUM &lt;= #{endRowNum} )
 		WHERE row_seq BETWEEN #{startRowNum} AND
 		#{endRowNum}

@@ -5,6 +5,8 @@ import java.util.Map;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -41,60 +43,65 @@ public class ProductController {
 	@Value("#{commonProperties['pageSize']}")
 	int pageSize;
 
-	//@RequestMapping("/addProductView.do")
-	//public String addProduct() throws Exception {
-	@RequestMapping(value="addProduct", method=RequestMethod.GET)
-	public String addProduct() throws Exception{
+	// @RequestMapping("/addProductView.do")
+	// public String addProduct() throws Exception {
+	@RequestMapping(value = "addProduct", method = RequestMethod.GET)
+	public String addProduct() throws Exception {
 
 		System.out.println("/product/addProduct : GET");
 
 		return "redirect:/product/addProductView.jsp";
 	}
 
-	//@RequestMapping("/addProduct.do")
-	@RequestMapping(value="addProduct", method=RequestMethod.POST)
-	public String addProduct(@ModelAttribute("product") Product product,@RequestParam("file")MultipartFile file) throws Exception {
+	// @RequestMapping("/addProduct.do")
+	@RequestMapping(value = "addProduct", method = RequestMethod.POST)
+	public String addProduct(@ModelAttribute("product") Product product, @RequestParam("file") MultipartFile file)
+			throws Exception {
 
 		System.out.println("/product/addProduct : POST");
-		
-		File f = new File("C:\\Users\\Bit\\git\\07.Model2MVCShop\\07.Model2MVCShop(URI,pattern)\\WebContent\\images\\uploadFiles\\"+file.getOriginalFilename());
-		file.transferTo(f); //위의 경로에 파일 저장
-		product.setFileName(file.getOriginalFilename()); //프로덕트에 set
-		
+
+		File f = new File(
+				"C:\\Users\\Bit\\git\\07.Model2MVCShop\\07.Model2MVCShop(URI,pattern)\\WebContent\\images\\uploadFiles\\"
+						+ file.getOriginalFilename());
+		file.transferTo(f); // 위의 경로에 파일 저장
+		product.setFileName(file.getOriginalFilename()); // 프로덕트에 set
+
 		// Business Logic
 		productService.addProduct(product);
 
 		return "forward:/product/addProduct.jsp";
 	}
 
-	//@RequestMapping("getProduct.do")
-	@RequestMapping(value="getProduct", method=RequestMethod.GET)
-	public String getProduct(@RequestParam("prodNo") String prodNo, Model model, HttpServletRequest request)
-			throws Exception {
+	// @RequestMapping("getProduct.do")
+	@RequestMapping(value = "getProduct", method = RequestMethod.GET)
+	public String getProduct(@RequestParam("prodNo") String prodNo, Model model, HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 
 		System.out.println("/product/getProduct : GET");
 		// Business Logic
 		Product product = productService.getProduct(Integer.parseInt(prodNo));
-		// Model과 View 연결
-		model.addAttribute("product", product);
-		
+
 		String history = null;
 		Cookie[] getCookie = request.getCookies();
-		if(getCookie !=null) {
-			for(int i=0; i<getCookie.length; i++) {
+		if (getCookie != null && getCookie.length > 0) {
+			for (int i = 0; i < getCookie.length; i++) {
 				Cookie cookie = getCookie[i];
-				if(cookie.getName().equals("history")) {
+				if (cookie.getName().equals("history")) {
 					history = cookie.getValue();
 				}
 			}
 		}
-		
-		history +=","+product.getProdNo();
-		//history +=","+product.getProdName();
+
+		history += "," + product.getProdNo();
+		// history +=","+product.getProdName();
 		CookieGenerator cg = new CookieGenerator();
 		cg.setCookieName("history");
-		
-		
+		cg.setCookieMaxAge(60*60*24);//쿠키 유효기간 설정 초단위 : 60*60*24= 1일 
+		cg.addCookie(response, history);
+
+		// Model과 View 연결
+		model.addAttribute("product", product);
+
 		if (request.getParameter("menu").equals("manage")) {
 			System.out.println("menu :::::" + request.getParameter("menu"));
 			return "forward:/product/updateProductView.jsp";
@@ -104,11 +111,12 @@ public class ProductController {
 		}
 	}
 
-	//@RequestMapping("/updateProductView.do")
-	//public String updateProductView(@RequestParam("prodNo") String prodNo, Model model) throws Exception {
-	@RequestMapping(value="updateProduct", method=RequestMethod.GET)
-	public String updateProduct(@RequestParam("prodNo") String prodNo, Model model)throws Exception{
-		
+	// @RequestMapping("/updateProductView.do")
+	// public String updateProductView(@RequestParam("prodNo") String prodNo, Model
+	// model) throws Exception {
+	@RequestMapping(value = "updateProduct", method = RequestMethod.GET)
+	public String updateProduct(@RequestParam("prodNo") String prodNo, Model model) throws Exception {
+
 		System.out.println("/product/updateProductView : GET");
 		// Business Logic
 		Product product = productService.getProduct(Integer.parseInt(prodNo));
@@ -118,24 +126,32 @@ public class ProductController {
 		return "forward:/product/updateProductView.jsp";
 	}
 
-	//@RequestMapping("updateProduct.do")
-	@RequestMapping(value="updateProduct", method=RequestMethod.POST)
-	public String updateProduct(@ModelAttribute("product") Product product, Model model) throws Exception {
+	// @RequestMapping("updateProduct.do")
+	@RequestMapping(value = "updateProduct", method = RequestMethod.POST)
+	public String updateProduct(@ModelAttribute("product") Product product, Model model, @RequestParam("file") MultipartFile file) throws Exception {
 
 		System.out.println("/product/updateProduct : POST");
+		
+		File f = new File(
+				"C:\\Users\\Bit\\git\\07.Model2MVCShop\\07.Model2MVCShop(URI,pattern)\\WebContent\\images\\uploadFiles\\"
+						+ file.getOriginalFilename());
+		file.transferTo(f); // 위의 경로에 파일 저장
+		product.setFileName(file.getOriginalFilename()); // 프로덕트에 set
+		
+		
 		// Business Logic
 		productService.updateProduct(product);
 
 		return "forward:/product/getProduct.jsp";
 	}
 
-	//@RequestMapping("listProduct.do")
-	@RequestMapping(value="listProduct")
-	public String listProduct(@ModelAttribute("search") Search search, Model model, HttpServletRequest request)
-			throws Exception {
+	// @RequestMapping("listProduct.do")
+	@RequestMapping(value = "listProduct")
+	public String listProduct(@ModelAttribute("search") Search search, @RequestParam("orderby") String orderby,
+			Model model, HttpServletRequest request) throws Exception {
 
-		System.out.println("/product/listProduct : GET / POST");
-		System.out.println("getCurrentPage"+search.getCurrentPage());
+		System.out.println("/product/listProduct ");
+		System.out.println("getCurrentPage" + search.getCurrentPage());
 
 		if (search.getCurrentPage() == 0) {
 			search.setCurrentPage(1);
@@ -145,11 +161,11 @@ public class ProductController {
 		search.setSearchKeyword(request.getParameter("searchKeyword"));
 
 		// Business logic 수행
-		Map<String, Object> map = productService.getProductList(search);
+		Map<String, Object> map = productService.getProductList(search, orderby);
 
-		Page resultPage = new Page(search.getCurrentPage(), ((Integer) map.get("totalCount")).intValue(), pageUnit, pageSize);
+		Page resultPage = new Page(search.getCurrentPage(), ((Integer) map.get("totalCount")).intValue(), pageUnit,
+				pageSize);
 		System.out.println(resultPage);
-
 
 		// Model 과 View 연결
 		model.addAttribute("list", map.get("list"));
@@ -157,10 +173,10 @@ public class ProductController {
 		model.addAttribute("search", search);
 
 		if (request.getParameter("menu").equals("manage")) {
-			System.out.println("menu :::::"+request.getParameter("menu"));
+			System.out.println("menu :::::" + request.getParameter("menu"));
 			return "forward:/product/managerProduct.jsp";
 		} else {
-			System.out.println("menu  ::::"+request.getParameter("menu"));
+			System.out.println("menu  ::::" + request.getParameter("menu"));
 			return "forward:/product/listProduct.jsp";
 		}
 	}
