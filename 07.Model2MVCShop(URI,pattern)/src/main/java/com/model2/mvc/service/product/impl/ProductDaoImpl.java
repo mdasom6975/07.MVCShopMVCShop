@@ -48,13 +48,14 @@ public class ProductDaoImpl implements ProductDao {
 	}
 
 	@Override
-	public List<Product> getProductList(Search search) throws Exception {
+	public List<Product> getProductList(Search search, String orderby) throws Exception {
 		
 		Map<String, String > map = new HashMap<String, String>();
 		map.put("searchCondition", search.getSearchCondition());
 		map.put("searchKeyword", search.getSearchKeyword());
 		map.put("endRowNum", search.getEndRowNum()+"");
 		map.put("startRowNum", search.getStartRowNum()+"");		
+		map.put("orderby", orderby);
 		return sqlSession.selectList("ProductMapper.getProductList", map);
 	}
 

@@ -24,7 +24,7 @@
 
 	<div style="width: 98%; margin-left: 10px;">
 
-		<form name="detailForm" action="/product/listProduct?menu=search" method="post">
+		<form name="detailForm" action="/product/listProduct?menu=search&orderby=${param.orderby }" method="post">
 
 			<table width="100%" height="37" border="0" cellpadding="0"
 				cellspacing="0">
@@ -47,6 +47,8 @@
 			<table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-top: 10px;">
 				<tr>
 					<td align="right">
+			<a href="/product/listProduct?menu=search&orderby=lowprice">낮은 가격순</a>
+			<a href="/product/listProduct?menu=search&orderby=highprice">높은 가격순</a>
 					<select name="searchCondition" class="ct_input_g" style="width: 80px">
 							<option value="0"
 								${ ! empty search.searchCondition && search.searchCondition==0 ? "selected" : "" }>상품번호</option>
@@ -83,6 +85,8 @@
 				<tr>
 					<td class="ct_list_b" width="100">No</td>
 					<td class="ct_line02"></td>
+					<td class="ct_list_b" width="100">상품이미지</td>
+					<td class="ct_line02"></td>
 					<td class="ct_list_b" width="150">상품명</td>
 					<td class="ct_line02"></td>
 					<td class="ct_list_b" width="150">가격</td>
@@ -101,6 +105,11 @@
 					<tr class="ct_list_pop">
 						<td align="center">${ i }</td>
 						<td></td>
+						<td>
+						<div style="width:90px; height: 90px; overflow: hidden">
+				<img src="/images/uploadFiles/${product.fileName} " style="max-width: 100%; height: 100%;" />
+				</div>
+				<td></td>
 						<td align="left"><a
 							href="/product/getProduct?prodNo=${product.prodNo}&menu=search">${product.prodName}</a></td>
 						<td></td>
